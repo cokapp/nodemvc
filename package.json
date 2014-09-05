@@ -1,0 +1,22 @@
+{
+    "name": "cokmvc",
+    "description": "a simple mvc framework based on express.",
+    "version": "0.0.1dev",
+    "author": "bladin <dev@cokapp.com>",
+    "main": "index",
+    "dependencies": {
+        "express": "latest",
+        "js-yaml": "latest",
+        "showdown": "latest",
+        "xfs": "latest",
+        "static-favicon": "~1.0.0",
+        "cookie-parser": "~1.0.1",
+        "body-parser": "~1.0.0",
+        "ejs": "~0.8.5",
+        "express-partials": "latest",
+        "log4js": "latest",
+        "async": "latest"
+    },
+    "repository": "git://github.com/cokapp/nodemvc",
+    "engines": { "node": "*" }
+}
