@@ -1,6 +1,6 @@
 {
-    "name": "cokmvc",
-    "description": "a simple mvc framework based on express.",
+    "name": "cokmvc-simple",
+    "description": "a simple app based on cokmvc",
     "version": "0.0.1dev",
     "author": {
         "name": "bladin",
