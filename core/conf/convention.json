@@ -8,8 +8,6 @@
         "VIEWS" : "views",
         "CONTROLLERS" : "controllers",
         "STATIC" : {
-            "static": "static",
-            "views": "views"
         }
     },
     "VIEW_SUFFIX" : "html",
