@@ -1,7 +1,7 @@
 //Set Core Lib
-var NodeMVC = require('../../core/NodeMVC');
+var NodeMVC = require('cokmvc');
 //Set AppRoot
-NodeMVC.setAppRoot('./');
+NodeMVC.setAppRoot(__dirname);
 //StartUP
 NodeMVC.startup(function(server){
 	//NodeMVC is working, enjoy!

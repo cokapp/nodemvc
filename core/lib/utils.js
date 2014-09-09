@@ -55,14 +55,13 @@ utils.loadConf = function(appRoot) {
     });
 
     gb.config = allConf;
-    gb.config.__ENV.APP_PATH = appRoot;
+    gb.config.__ENV.APP_ROOT = appRoot;
     gb.config.__ENV.ROOT = gb.path.join(__dirname, '../../');
-    gb.config.__ENV.APP_ROOT = gb.path.join(gb.config.__ENV.ROOT, gb.config.__ENV.APP_PATH);
 
-    gb.logger.info('APP GLOBAL ENV');
+    gb.logger.info('==================APP GLOBAL ENV');
     gb.logger.info(gb.config);
-    gb.logger.info('APP GLOBAL ENV');
-    return allConf;
+    gb.logger.info('APP GLOBAL ENV==================');
+    return gb.config;
 }
 
 utils.getAllControllers = function() {
@@ -71,7 +70,7 @@ utils.getAllControllers = function() {
 
     var controllerPath = {
         core : [gb.path.join(__dirname, '../controllers/')],
-        app : [gb.path.join(gb.config.__ENV.ROOT, gb.config.__ENV.APP_PATH, gb.config.DIR.CONTROLLERS, '/')]
+        app : [gb.path.join(gb.config.__ENV.APP_ROOT, gb.config.DIR.CONTROLLERS, '/')]
     };
 
     for(var pathtype in controllerPath){

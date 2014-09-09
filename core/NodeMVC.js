@@ -35,7 +35,7 @@ NodeMVC.startup = function(callback){
 
     // view engine setup
     app.use(partials());
-    app.set('views', gb.path.join(gb.config.__ENV.ROOT, gb.config.__ENV.APP_PATH, gb.config.DIR.VIEWS));
+    app.set('views', gb.path.join(gb.config.__ENV.APP_ROOT, gb.config.DIR.VIEWS));
 
     app.engine('.' + gb.config.VIEW_SUFFIX, require('ejs').renderFile);
     app.set('view engine', gb.config.VIEW_SUFFIX);
@@ -43,10 +43,8 @@ NodeMVC.startup = function(callback){
     //static dir
     for(var i in gb.config.DIR.STATIC){
         var st = gb.config.DIR.STATIC[i];
-        app.use('/' + st, express.static(gb.path.join(NodeMVC.APP_PATH, st)));
+        app.use('/' + st, express.static(gb.path.join(gb.config.__ENV.APP_ROOT, st)));
     }
-
-
 
     app.use(favicon());
     app.use(bodyParser.json());

@@ -1,7 +1,7 @@
 {
     "name": "cokmvc-simple",
     "description": "a simple app based on cokmvc",
-    "version": "0.0.1dev",
+    "version": "0.0.3dev",
     "author": {
         "name": "bladin",
         "email": "dev@cokapp.com",
@@ -9,15 +9,7 @@
     },
     "main": "index",
     "dependencies": {
-        "express": "latest",
-        "xfs": "latest",
-        "static-favicon": "~1.0.0",
-        "cookie-parser": "~1.0.1",
-        "body-parser": "~1.0.0",
-        "ejs": "~0.8.5",
-        "express-partials": "latest",
-        "log4js": "latest",
-        "async": "latest"
+        "cokmvc": "latest"
     },
     "repository": "git://github.com/cokapp/nodemvc",
     "engines": { "node": "*" }
