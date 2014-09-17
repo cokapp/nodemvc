@@ -1,5 +1,5 @@
 {
     "URL_MAPPING" : {
-        "^*$" : "/index"
+        "^$" : "/index"
     }
 }

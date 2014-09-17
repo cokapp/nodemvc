@@ -34,36 +34,6 @@ utils.combine = function (from, to, isCover) {
     }
 }
 
-utils.loadConf = function(appRoot) {
-
-    var allConf = {};
-
-    var convention = JSON.parse(gb.fs.readFileSync(gb.path.join(__dirname, '../conf/convention.json')));
-
-    utils.combine(convention, allConf, true);
-
-    var user_conf_path = gb.path.join(appRoot, 'conf');
-    gb.fs.readdirSync(user_conf_path).forEach(function (file) {
-
-        var endWith = '.json';
-        if (file.slice(-endWith.length) != endWith) {
-            return;
-        }
-
-        var conf = JSON.parse(gb.fs.readFileSync(gb.path.join(user_conf_path, file)));
-        utils.combine(conf, allConf, true);
-    });
-
-    gb.config = allConf;
-    gb.config.__ENV.APP_ROOT = appRoot;
-    gb.config.__ENV.ROOT = gb.path.join(__dirname, '../../');
-
-    gb.logger.info('==================APP GLOBAL ENV');
-    gb.logger.info(gb.config);
-    gb.logger.info('APP GLOBAL ENV==================');
-    return gb.config;
-}
-
 utils.getAllControllers = function() {
 
     var allControllers = [];

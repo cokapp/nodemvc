@@ -11,25 +11,15 @@ var partials = require('express-partials');
 var path = require('path');
 var fs = require('fs');
 
-//Set AppRoot
-NodeMVC.setAppRoot = function(appRoot){
-    NodeMVC.APP_PATH = appRoot;
-}
-
-
 //StartUP
-NodeMVC.startup = function(callback){
+NodeMVC.startup = function(options, callback){
 
     //Load Global
     require(path.join(__dirname, 'lib/global'));
-    gb.utils.loadConf(NodeMVC.APP_PATH);
 
-    var indexFile = module.parent.filename;
-    //fix win file path
-    var baseFolder =  gb.path.dirname(indexFile);
-    gb.config.__ENV.ROOT = baseFolder;
+    gb.init(options);
 
-    gb.init();
+
 
     var app = express();
 

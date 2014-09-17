@@ -1,0 +1,8 @@
+{
+	"title": "CokWiki",
+	"sub-title": "a tiny wiki based on cokmvc!",
+	"cover": null,
+    "URL_MAPPING" : {
+        "^\/xx$":"/index2"
+    }
+}

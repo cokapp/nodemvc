@@ -14,6 +14,8 @@ var utils = require('./utils'),
     hashmap = require('./hashmap'),
     ControllerFactory = require('./ControllerFactory');
 
+var configuration = require('./configuration');
+
 var gb = {};
 global.gb = gb;
 
@@ -34,7 +36,16 @@ gb.ControllerFactory = ControllerFactory;
 require('./SimpleInheritance');
 
 
-gb.init = function(){
+gb.init = function(options){
+
+    var conf = new configuration(options.appRoot);
+    for(var i in options.cfgFiles){
+        var cfgFile = options.cfgFiles[i];
+        conf.attach(cfgFile.weight, cfgFile.file);
+    }
+    gb.config = conf.load();
+
+    console.log(gb.config);
 
     var AbstractHandler = require('../controllers/AbstractHandler');
     gb.AbstractHandler = AbstractHandler;
