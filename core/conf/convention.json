@@ -7,11 +7,13 @@
         "MODELS" : "models",
         "VIEWS" : "views",
         "CONTROLLERS" : "controllers",
+        "INTERCEPTORS" : "interceptors",
         "STATIC" : {
         }
     },
     "VIEW_SUFFIX" : "html",
     "COOKIE_SECRET" : "node mvc",
+    "SESSION_SECRET" : "node mvc",
 
     "URL_MAPPING" : {
 

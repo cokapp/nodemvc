@@ -32,11 +32,21 @@ function dispatcher(req, res, next){
     }
     gb.logger.info('%s, dispatch the request url : %s, to desturl: %s', req.method, request_url, mappedUrlPath);
 
-    //获取相应处理器
-    var controller = gb.ControllerFactory.getHandler(mappedUrlPath);
 
+    //获取相应处理器
+    var controller = gb.controller.getHandler(mappedUrlPath);
     var handler = new controller();
     //记录映射后的urlpath
     handler.mappedUrlPath = mappedUrlPath;
+    
+    var beforeInterceptors = gb.interceptor.getBefore();
+    for(var i in beforeInterceptors){
+        handler.onBeforeHand.push(beforeInterceptors[i].doIntercept);
+    }
+    var afterInterceptors = gb.interceptor.getAfter();
+    for(var i in afterInterceptors){
+        handler.onAfterHand.push(afterInterceptors[i].doIntercept);
+    }
+
     handler.hand(req, res, next);
 }

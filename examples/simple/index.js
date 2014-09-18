@@ -1,7 +1,7 @@
 var path = require('path');
 
 //Set Core Lib
-var NodeMVC = require('../../index');
+var NodeMVC = require('cokmvc');
 
 var options = {
 	appRoot: __dirname,

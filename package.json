@@ -1,7 +1,7 @@
 {
     "name": "cokmvc",
     "description": "a simple mvc framework based on express.",
-    "version": "0.0.5dev",
+    "version": "0.0.7dev",
     "author": {
         "name": "bladin",
         "email": "dev@cokapp.com",
@@ -10,6 +10,7 @@
     "main": "index",
     "dependencies": {
         "express": "latest",
+        "express-session": "latest",
         "xfs": "latest",
         "static-favicon": "~1.0.0",
         "cookie-parser": "~1.0.1",

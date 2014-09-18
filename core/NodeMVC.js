@@ -2,6 +2,7 @@ var NodeMVC = {};
 module.exports = NodeMVC;
 
 var express = require('express');
+var session = require('express-session')
 
 var favicon = require('static-favicon');
 var cookieParser = require('cookie-parser');
@@ -12,14 +13,11 @@ var path = require('path');
 var fs = require('fs');
 
 //StartUP
-NodeMVC.startup = function(options, callback){
+NodeMVC.startup = function(options, callback) {
 
     //Load Global
     require(path.join(__dirname, 'lib/global'));
-
     gb.init(options);
-
-
 
     var app = express();
 
@@ -30,8 +28,14 @@ NodeMVC.startup = function(options, callback){
     app.engine('.' + gb.config.VIEW_SUFFIX, require('ejs').renderFile);
     app.set('view engine', gb.config.VIEW_SUFFIX);
 
+    app.use(session({
+        secret: gb.config.SESSION_SECRET,
+        resave: true,
+        saveUninitialized: true
+    }));
+
     //static dir
-    for(var i in gb.config.DIR.STATIC){
+    for (var i in gb.config.DIR.STATIC) {
         var st = gb.config.DIR.STATIC[i];
         app.use('/' + i, express.static(gb.path.join(gb.config.__ENV.APP_ROOT, st)));
     }
@@ -44,7 +48,10 @@ NodeMVC.startup = function(options, callback){
     var dispatcher = require(path.join(__dirname, 'lib/dispatcher'));
     dispatcher(app);
 
-    app.set('port', gb.config.PORT || 80);
+    app.set('port', process.env.VCAP_APP_PORT 
+        || process.env.PORT 
+        || gb.config.PORT 
+        || 80);
 
     var server = app.listen(app.get('port'), function() {
         gb.logger.info('Express server listening on port ' + server.address().port);

@@ -5,49 +5,102 @@ var Handler = Class.extend({
     HandlerRegExp: null,
     HandlerName: null,
     method: ['all'],
-    model: null,
     para: {},
-    init: function () {
+
+    //send to client
+    rsp: null,
+
+    contentType: 'html',
+    tpl: null,
+    model: null,
+
+    //events
+    onBeforeHand: [],
+    onAfterHand: [],
+
+    _reset: function() {
         var _this = this;
+        
+        _this.rsp = {
+            status: {
+                success: true,
+                errorCode: null,
+                message: null
+            }
+        };
+        _this.contentType = 'html';
+        _this.tpl = null;
+        _this.model = null;
+        _this.onBeforeHand = [];
+        _this.onAfterHand = [];
+
+    },
+
+    init: function() {
+        var _this = this;
+
+        _this._reset();
+
         gb.logger.info('HandlerName : %s is initing', this.HandlerName);
     },
-    hand: function (req, res, next) {
-        this.next = next;
+    hand: function(req, res, next) {
+        var _this = this;
+        //ref self
+        req.handler = _this;
+        _this.next = next;
+
         //step.1 参数处理
-        this.para = this._reqestParse(req, res);
+        _this.para = _this._reqestParse(req, res);
         //step.2 模型映射
-        this._initModel();
+        _this._initModel();
+
+        //前拦截器
+        for (var i in _this.onBeforeHand) {
+            var hasNext = _this.onBeforeHand[i](req, res, _this.next);
+            if (!hasNext) {
+                return;
+            }
+        }
         //step.3 正式处理Http请求
-        this._dohand();
+        _this._dohand();
+        //后拦截器
+        for (var i in _this.onAfterHand) {
+            var hasNext = _this.onAfterHand[i](_this.para.req, _this.para.res, _this.next);
+            if (!hasNext) {
+                return;
+            }
+        }
+        //step.4 返回结果
+        _this._endHand();
     },
-    _initModel: function(){
+    _initModel: function() {
         var _this = this;
 
         var appRoot = gb.config.__ENV.APP_ROOT;
-        try{
-            var Model = require(gb.path.join(appRoot, 'models/' + _this.HandlerName + 'Model'));
-            _this.model = new Model();  
-        }catch(e){
-            gb.logger.info(e);
+        try {
+            var Model = require(gb.path.join(appRoot, gb.config.DIR.MODELS, _this.HandlerName + 'Model'));
+            _this.model = new Model();
+        } catch (e) {
+            var emptyModel = require('../models/emptyModel');
             gb.logger.info('未定义模型：%s', _this.HandlerName);
-            _this.model = {};
+            _this.model = new emptyModel();
             return;
         }
 
         //简单的自动映射
-        for(var i in _this.model){
-            if(typeof _this.para.req.param(i) === 'undefined'){
+        for (var i in _this.model) {
+            if (typeof _this.para.req.param(i) === 'undefined' || typeof _this.para.req.param(i) === 'function') {
                 continue;
             }
-            console.log('%s=%s',i,_this.para.req.param(i));
+            console.log('%s=%s', i, _this.para.req.param(i));
             _this.model[i] = _this.para.req.param(i);
         }
 
-        if(_this.initModel){
+        if (_this.initModel) {
             _this.initModel();
         }
     },
-    _reqestParse: function (req, res) {
+    _reqestParse: function(req, res) {
         var _this = this;
 
         var parsedUrl = gb.url.parse(req.url);
@@ -64,52 +117,42 @@ var Handler = Class.extend({
             res: res
         };
         gb.logger.info('reqestParsed: ' +
-                '\r\n pathName: %s ' +
-                '\r\n mappedPathName: %s ' +
-                '\r\n urlPara: %s ' +
-                '\r\n query: %s ' +
-                '\r\n body: %s ' +
-                '\r\n params: %s \r\n '
-            , parsedUrl.pathname
-            , para.pathName
-            , JSON.stringify(para.urlPara)
-            , JSON.stringify(para.query)
-            , JSON.stringify(para.body)
-            , JSON.stringify(para.params));
+            '\r\n pathName: %s ' +
+            '\r\n mappedPathName: %s ' +
+            '\r\n urlPara: %s ' +
+            '\r\n query: %s ' +
+            '\r\n body: %s ' +
+            '\r\n params: %s \r\n ', parsedUrl.pathname, para.pathName, JSON.stringify(para.urlPara), JSON.stringify(para.query), JSON.stringify(para.body), JSON.stringify(para.params));
 
         return para;
     },
-    _dohand: function () {
+    _dohand: function() {
         var _this = this;
 
-        if(_this.doAuth !== null){
-            _this.doAuth();
-            gb.logger.info('visit auth accepted by %s', _this.HandlerName)
-        }
-
         gb.async.series([
-            function (cb) {
+
+            function(cb) {
                 if (_this.preDoAll !== null) {
                     _this.preDoAll(cb);
                 } else {
                     cb(null, null);
                 }
             },
-            function (cb) {
+            function(cb) {
                 if (_this.preDoGet !== null) {
                     _this.preDoGet(cb);
                 } else {
                     cb(null, null);
                 }
             },
-            function (cb) {
+            function(cb) {
                 if (_this.preDoPost !== null) {
                     _this.preDoPost(cb);
                 } else {
                     cb(null, null);
                 }
             }
-        ], function (e, d) {
+        ], function(e, d) {
             if (_this.doAll != null) {
                 gb.logger.info('doAll by %s', _this.HandlerName);
                 _this.doAll();
@@ -132,39 +175,27 @@ var Handler = Class.extend({
     preDoPost: null,
     preDoAll: null,
 
-    doAuth: null,
     initModel: null,
-    render: function (tpl, rsp) {
+
+    _endHand: function() {
         var _this = this;
 
-        var num = arguments.length;
-        var template = tpl, options = rsp;
-        if (num === 0) {
-            //use HandlerName but HandlerRegExp
-            template = this.HandlerName;
-            options = {};
-        } else if (num === 1) {
-            template = this.HandlerName;
-            options = arguments[0];
-        } else {
-            // template = arguments[0];
-            // options = arguments[1];
+        var rsp = _this.rsp || {};
+
+        if (_this.contentType === 'json') {
+            rsp.model = _this.model;
+            _this.para.res.send(rsp);
+        } else { //always html
+            if (typeof rsp.layout === 'undefined' || rsp.layout === null) {
+                rsp.layout = '_public/layout';
+            }
+            rsp.model = _this.model;
+            rsp.req = _this.para.req;
+
+            var tpl = _this.tpl || _this.HandlerName;
+            _this.para.res.render(tpl, rsp);
         }
-
-        if (typeof options.layout === 'undefined' || options.layout === null) {
-            options.layout = '_public/layout';
-        }
-
-        options.model = _this.model;
-
-        gb.logger.info('render tpl:%s,data:%s', template, JSON.stringify(options));
-        this.para.res.render(template, options);
-    },
-    send: function (rsp) {
-        this.para.res.send(rsp);
     }
 });
 
 module.exports = Handler;
-
-
