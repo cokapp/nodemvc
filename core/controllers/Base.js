@@ -20,7 +20,7 @@ var Handler = Class.extend({
 
     _reset: function() {
         var _this = this;
-        
+
         _this.rsp = {
             status: {
                 success: true,
@@ -58,6 +58,7 @@ var Handler = Class.extend({
         for (var i in _this.onBeforeHand) {
             var hasNext = _this.onBeforeHand[i](req, res, _this.next);
             if (!hasNext) {
+                _this._endHand();
                 return;
             }
         }
@@ -67,7 +68,7 @@ var Handler = Class.extend({
         for (var i in _this.onAfterHand) {
             var hasNext = _this.onAfterHand[i](_this.para.req, _this.para.res, _this.next);
             if (!hasNext) {
-                return;
+                break;
             }
         }
         //step.4 返回结果

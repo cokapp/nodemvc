@@ -1,9 +1,9 @@
 /*
 404
  */
-var AbstractHandler = require('../AbstractHandler');
+var BaseController = require('../Base');
 
-var Handler = AbstractHandler.extend({
+var Handler = BaseController.extend({
 	_initModel: function(){
 		//disable model init
 	},

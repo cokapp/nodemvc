@@ -9,7 +9,6 @@ var hashmap = require('./hashmap'),
 var path = require('path'),
     fs = require('fs');
 
-
 module.exports = function(appRoot) {
     var _this = this;
 

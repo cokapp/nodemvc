@@ -15,29 +15,28 @@ var fs = require('fs');
 //StartUP
 NodeMVC.startup = function(options, callback) {
 
-    //Load Global
-    require(path.join(__dirname, 'lib/global'));
-    gb.init(options);
+    //应用初始化
+    require('./lib/COKMVC').init(options);
 
     var app = express();
 
     // view engine setup
     app.use(partials());
-    app.set('views', gb.path.join(gb.config.__ENV.APP_ROOT, gb.config.DIR.VIEWS));
+    app.set('views', COKMVC.path.join(ctx.config.__ENV.APP_ROOT, ctx.config.DIR.VIEWS));
 
-    app.engine('.' + gb.config.VIEW_SUFFIX, require('ejs').renderFile);
-    app.set('view engine', gb.config.VIEW_SUFFIX);
+    app.engine('.' + ctx.config.VIEW_SUFFIX, require('ejs').renderFile);
+    app.set('view engine', ctx.config.VIEW_SUFFIX);
 
     app.use(session({
-        secret: gb.config.SESSION_SECRET,
+        secret: ctx.config.SESSION_SECRET,
         resave: true,
         saveUninitialized: true
     }));
 
     //static dir
-    for (var i in gb.config.DIR.STATIC) {
-        var st = gb.config.DIR.STATIC[i];
-        app.use('/' + i, express.static(gb.path.join(gb.config.__ENV.APP_ROOT, st)));
+    for (var i in ctx.config.DIR.STATIC) {
+        var st = ctx.config.DIR.STATIC[i];
+        app.use('/' + i, express.static(COKMVC.path.join(ctx.config.__ENV.APP_ROOT, st)));
     }
 
     app.use(favicon());
@@ -50,11 +49,11 @@ NodeMVC.startup = function(options, callback) {
 
     app.set('port', process.env.VCAP_APP_PORT 
         || process.env.PORT 
-        || gb.config.PORT 
+        || ctx.config.PORT 
         || 80);
 
     var server = app.listen(app.get('port'), function() {
-        gb.logger.info('Express server listening on port ' + server.address().port);
+        COKMVC.logger.info('Express server listening on port ' + server.address().port);
         callback(server);
     });
 

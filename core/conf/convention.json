@@ -7,7 +7,7 @@
         "MODELS" : "models",
         "VIEWS" : "views",
         "CONTROLLERS" : "controllers",
-        "INTERCEPTORS" : "interceptors",
+        "PLUGINS" : "plugins",
         "STATIC" : {
         }
     },

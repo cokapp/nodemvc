@@ -1,4 +1,4 @@
-var Handler = gb.AbstractHandler.extend({
+var Handler = COKMVC.BaseController.extend({
 	doAll : function() {
 		this.render();
 	}
