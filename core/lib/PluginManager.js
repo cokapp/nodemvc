@@ -26,8 +26,9 @@ var PM = MM.extend({
 
         _this.AllPlugins = new hashmap();
 
-        for (var i in _this.allModules) {
-            var plg = new _this.allModules[i];
+        var mds = _this.allModules.values();
+        for (var i in mds) {
+            var plg = new mds[i];
 
             plg.register(_this);
         }

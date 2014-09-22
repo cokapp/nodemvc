@@ -26,12 +26,12 @@ var PM = MM.extend({
 
         _this.AllControllers = [];
 
-        for (var i in _this.allModules) {
-
-            var C = _this.allModules[i];
+        var mds = _this.allModules.values();
+        for (var i in mds) {
+            var C = mds[i];
 
             var name = C.prototype.File.replace('Controller\.js', '');
-            name = name.replace(C.prototype.Folder, '');
+            name = name.replace(path.join(C.prototype.Folder, '/'), '');
             name = name.replace(/\\/g, '/');
 
             C.prototype.HandlerName = name;
@@ -46,6 +46,8 @@ var PM = MM.extend({
         }
     },
     getHandler: function(urlpath) {
+        var _this = this;
+        
         for (var name in _this.AllControllers) {
             var C = _this.AllControllers[name];
             var mts = urlpath.match(C.prototype.HandlerRegExp);

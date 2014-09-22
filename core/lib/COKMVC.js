@@ -28,6 +28,7 @@ COKMVC.fileutil = fileutil;
 COKMVC.hashmap = hashmap;
 
 COKMVC.BaseController = require('../controllers/Base');
+COKMVC.BasePlugin = require('../plugins/Base');
 
 
 COKMVC.init = function(options){

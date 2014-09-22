@@ -18,7 +18,8 @@ ML.load = function(paths, regex) {
     var allModules = new hashmap();
 
     for (var pathindex in paths) {
-        var folder = paths[pathindex];
+        var folder = path.normalize(paths[pathindex]);
+        
         logger.info('从文件夹【%s】中载入模块！', folder);
         var allFiles = fileutil.readAllFile(folder);
         for (var i in allFiles) {

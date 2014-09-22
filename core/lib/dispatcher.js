@@ -1,4 +1,4 @@
-var mapping = gb.config.URL_MAPPING;
+var mapping = ctx.config.URL_MAPPING;
 
 module.exports = function(app){
     app.use(dispatcher);
@@ -10,7 +10,7 @@ function dispatcher(req, res, next){
     //url解码
     req.url = decodeURI(req.url);
 
-    var request_url = gb.url.parse(req.url).pathname;
+    var request_url = COKMVC.url.parse(req.url).pathname;
 
     var mappedUrlPath = request_url;
     if(request_url.match(/\/$/)){
@@ -30,23 +30,14 @@ function dispatcher(req, res, next){
             break;
         }
     }
-    gb.logger.info('%s, dispatch the request url : %s, to desturl: %s', req.method, request_url, mappedUrlPath);
+    COKMVC.logger.info('%s, dispatch the request url : %s, to desturl: %s', req.method, request_url, mappedUrlPath);
 
 
     //获取相应处理器
-    var controller = gb.controller.getHandler(mappedUrlPath);
+    var controller = ctx.CM.getHandler(mappedUrlPath);
     var handler = new controller();
     //记录映射后的urlpath
     handler.mappedUrlPath = mappedUrlPath;
     
-    var beforeInterceptors = gb.interceptor.getBefore();
-    for(var i in beforeInterceptors){
-        handler.onBeforeHand.push(beforeInterceptors[i].doIntercept);
-    }
-    var afterInterceptors = gb.interceptor.getAfter();
-    for(var i in afterInterceptors){
-        handler.onAfterHand.push(afterInterceptors[i].doIntercept);
-    }
-
     handler.hand(req, res, next);
 }

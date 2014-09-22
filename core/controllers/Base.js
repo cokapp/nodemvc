@@ -14,10 +14,6 @@ var Handler = Class.extend({
     tpl: null,
     model: null,
 
-    //events
-    onBeforeHand: [],
-    onAfterHand: [],
-
     _reset: function() {
         var _this = this;
 
@@ -29,11 +25,8 @@ var Handler = Class.extend({
             }
         };
         _this.contentType = 'html';
-        _this.tpl = null;
+        //_this.tpl = null;
         _this.model = null;
-        _this.onBeforeHand = [];
-        _this.onAfterHand = [];
-
     },
 
     init: function() {
@@ -41,7 +34,7 @@ var Handler = Class.extend({
 
         _this._reset();
 
-        gb.logger.info('HandlerName : %s is initing', this.HandlerName);
+        COKMVC.logger.info('HandlerName : %s is initing', this.HandlerName);
     },
     hand: function(req, res, next) {
         var _this = this;
@@ -55,35 +48,25 @@ var Handler = Class.extend({
         _this._initModel();
 
         //前拦截器
-        for (var i in _this.onBeforeHand) {
-            var hasNext = _this.onBeforeHand[i](req, res, _this.next);
-            if (!hasNext) {
-                _this._endHand();
-                return;
-            }
-        }
+
         //step.3 正式处理Http请求
         _this._dohand();
+
         //后拦截器
-        for (var i in _this.onAfterHand) {
-            var hasNext = _this.onAfterHand[i](_this.para.req, _this.para.res, _this.next);
-            if (!hasNext) {
-                break;
-            }
-        }
         //step.4 返回结果
         _this._endHand();
     },
     _initModel: function() {
         var _this = this;
 
-        var appRoot = gb.config.__ENV.APP_ROOT;
+        var appRoot = ctx.config.__ENV.APP_ROOT;
         try {
-            var Model = require(gb.path.join(appRoot, gb.config.DIR.MODELS, _this.HandlerName + 'Model'));
+            var Model = require(COKMVC.path.join(appRoot, ctx.config.DIR.MODELS
+                , _this.HandlerName + 'Model'));
             _this.model = new Model();
         } catch (e) {
             var emptyModel = require('../models/emptyModel');
-            gb.logger.info('未定义模型：%s', _this.HandlerName);
+            COKMVC.logger.info('未定义模型：%s', _this.HandlerName);
             _this.model = new emptyModel();
             return;
         }
@@ -104,7 +87,7 @@ var Handler = Class.extend({
     _reqestParse: function(req, res) {
         var _this = this;
 
-        var parsedUrl = gb.url.parse(req.url);
+        var parsedUrl = COKMVC.url.parse(req.url);
         var pathName = this.mappedUrlPath;
         var urlPara = pathName.match(this.HandlerRegExp);
         var para = {
@@ -117,7 +100,7 @@ var Handler = Class.extend({
             req: req,
             res: res
         };
-        gb.logger.info('reqestParsed: ' +
+        COKMVC.logger.info('reqestParsed: ' +
             '\r\n pathName: %s ' +
             '\r\n mappedPathName: %s ' +
             '\r\n urlPara: %s ' +
@@ -130,7 +113,7 @@ var Handler = Class.extend({
     _dohand: function() {
         var _this = this;
 
-        gb.async.series([
+        COKMVC.async.series([
 
             function(cb) {
                 if (_this.preDoAll !== null) {
@@ -155,15 +138,15 @@ var Handler = Class.extend({
             }
         ], function(e, d) {
             if (_this.doAll != null) {
-                gb.logger.info('doAll by %s', _this.HandlerName);
+                COKMVC.logger.info('doAll by %s', _this.HandlerName);
                 _this.doAll();
                 return;
             }
             if (_this.para.req.method === 'GET') {
-                gb.logger.info('doGet by %s', _this.HandlerName);
+                COKMVC.logger.info('doGet by %s', _this.HandlerName);
                 _this.doGet();
             } else {
-                gb.logger.info('goPost by %s', _this.HandlerName);
+                COKMVC.logger.info('goPost by %s', _this.HandlerName);
                 _this.doPost();
             }
         });
@@ -194,6 +177,8 @@ var Handler = Class.extend({
             rsp.req = _this.para.req;
 
             var tpl = _this.tpl || _this.HandlerName;
+            COKMVC.logger.info('使用模板【%s】, 渲染以下数据【%s】'
+                , tpl, JSON.stringify(rsp.model));
             _this.para.res.render(tpl, rsp);
         }
     }
