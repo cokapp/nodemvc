@@ -1,27 +1,24 @@
 {
-	"APP_NAME" : "A New NodeMVC App!",
+    "APP_NAME": "A New NodeMVC App!",
 
-    "PORT" : 8086,
+    "PORT": 8086,
 
-    "DIR" : {
-        "MODELS" : "models",
-        "VIEWS" : "views",
-        "CONTROLLERS" : "controllers",
-        "PLUGINS" : "plugins",
-        "STATIC" : {
-        }
+    "DIR": {
+        "MODELS": "models",
+        "VIEWS": "views",
+        "WIDGETS": "views/widgets",
+        "CONTROLLERS": "controllers",
+        "PLUGINS": "plugins",
+        "STATIC": {}
     },
-    "VIEW_SUFFIX" : "html",
-    "COOKIE_SECRET" : "node mvc",
-    "SESSION_SECRET" : "node mvc",
+    "VIEW_SUFFIX": "html",
+    "COOKIE_SECRET": "node mvc",
+    "SESSION_SECRET": "node mvc",
 
-    "URL_MAPPING" : {
+    "URL_MAPPING": {
 
     },
-    "__ENV" : {
+    "__ENV": {
 
     }
 }
-
-
-

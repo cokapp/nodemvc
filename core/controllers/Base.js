@@ -38,51 +38,28 @@ var Handler = Class.extend({
     },
     hand: function(req, res, next) {
         var _this = this;
+
+        COKMVC.logger.info('Start hand!');
         //ref self
-        req.handler = _this;
+        // req.handler = _this;
         _this.next = next;
 
         //step.1 参数处理
+        ctx.PM.exec('para_parse_before', _this);
         _this.para = _this._reqestParse(req, res);
-        //step.2 模型映射
-        _this._initModel();
+        ctx.PM.exec('para_parse_after', _this);
 
-        //前拦截器
-
-        //step.3 正式处理Http请求
+        //step.2 正式处理Http请求
+        ctx.PM.exec('req_hand_before', _this);
         _this._dohand();
+        ctx.PM.exec('req_hand_after', _this);
 
-        //后拦截器
-        //step.4 返回结果
+        //step.3 返回结果
+        ctx.PM.exec('req_render_before', _this);
         _this._endHand();
-    },
-    _initModel: function() {
-        var _this = this;
+        ctx.PM.exec('req_render_after', _this);
 
-        var appRoot = ctx.config.__ENV.APP_ROOT;
-        try {
-            var Model = require(COKMVC.path.join(appRoot, ctx.config.DIR.MODELS
-                , _this.HandlerName + 'Model'));
-            _this.model = new Model();
-        } catch (e) {
-            var emptyModel = require('../models/emptyModel');
-            COKMVC.logger.info('未定义模型：%s', _this.HandlerName);
-            _this.model = new emptyModel();
-            return;
-        }
-
-        //简单的自动映射
-        for (var i in _this.model) {
-            if (typeof _this.para.req.param(i) === 'undefined' || typeof _this.para.req.param(i) === 'function') {
-                continue;
-            }
-            console.log('%s=%s', i, _this.para.req.param(i));
-            _this.model[i] = _this.para.req.param(i);
-        }
-
-        if (_this.initModel) {
-            _this.initModel();
-        }
+        COKMVC.logger.info('End hand!');
     },
     _reqestParse: function(req, res) {
         var _this = this;
@@ -163,23 +140,15 @@ var Handler = Class.extend({
 
     _endHand: function() {
         var _this = this;
-
-        var rsp = _this.rsp || {};
-
         if (_this.contentType === 'json') {
-            rsp.model = _this.model;
-            _this.para.res.send(rsp);
+            _this.para.res.send(_this.rsp);
         } else { //always html
-            if (typeof rsp.layout === 'undefined' || rsp.layout === null) {
-                rsp.layout = '_public/layout';
+            if (typeof _this.rsp.layout === 'undefined' 
+                || _this.rsp.layout === null) {
+                _this.rsp.layout = '_public/layout';
             }
-            rsp.model = _this.model;
-            rsp.req = _this.para.req;
-
             var tpl = _this.tpl || _this.HandlerName;
-            COKMVC.logger.info('使用模板【%s】, 渲染以下数据【%s】'
-                , tpl, JSON.stringify(rsp.model));
-            _this.para.res.render(tpl, rsp);
+            _this.para.res.render(tpl, _this.rsp);
         }
     }
 });

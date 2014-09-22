@@ -40,6 +40,8 @@ var CTX = Class.extend({
             conf.attach(cfgFile.weight, cfgFile.file);
         }
         _this.config = conf.load();
+
+        COKMVC.logger.info(_this.config);
     },
     CMInit: function(options){
         var _this = this;

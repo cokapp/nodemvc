@@ -29,7 +29,6 @@ var PM = MM.extend({
         var mds = _this.allModules.values();
         for (var i in mds) {
             var plg = new mds[i];
-
             plg.register(_this);
         }
     },
@@ -37,12 +36,10 @@ var PM = MM.extend({
     //添加钩子
     register: function(hook, plg) {
         var _this = this;
-
         if (!_this.AllPlugins.containsKey(hook)) {
-            _this.AllPlugins.put(hook, [plg]);
-        } else {
-            _this.AllPlugins.get(hook).push(plg);
+            _this.AllPlugins.put(hook, []);
         }
+        _this.AllPlugins.get(hook).push(plg);
     },
     //执行钩子
     exec: function() {
@@ -53,12 +50,17 @@ var PM = MM.extend({
         var plgArgs = args;
 
         var plgs = _this.AllPlugins.get(hook);
+
+        if(plgs === null){
+            return;
+        }
+
         plgs.sort(function(a, b) {
             return a.Priority - b.Priority;
         });
         for (var i in plgs) {
             var plg = plgs[i];
-            plg.apply(plg, plgArgs);
+            plg.exec.apply(plg, plgArgs);
         }
 
     }

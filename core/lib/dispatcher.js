@@ -7,6 +7,7 @@ module.exports = function(app){
 
 //请求分发器
 function dispatcher(req, res, next){
+    COKMVC.logger.info('A new request processing started!');
     //url解码
     req.url = decodeURI(req.url);
 
@@ -31,7 +32,6 @@ function dispatcher(req, res, next){
         }
     }
     COKMVC.logger.info('%s, dispatch the request url : %s, to desturl: %s', req.method, request_url, mappedUrlPath);
-
 
     //获取相应处理器
     var controller = ctx.CM.getHandler(mappedUrlPath);
