@@ -49,5 +49,5 @@ node index
 ##进阶
 请参考示例：
 
-1. [CokWiki](https://git.oschina.net/cokapp/CokWiki)，[demo](http://cokmvc.coding.io "host on coding.io")
+1. [CokWiki](https://git.oschina.net/cokapp/CokWiki)，[demo](http://cokwiki.coding.io "host on coding.io")
 2. [Simple](https://git.oschina.net/cokapp/NodeMVC/tree/master/examples/simple/)
