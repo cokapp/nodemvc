@@ -2,8 +2,7 @@
 文件处理
 */
 
-var fs = require('fs'),
-	xfs = require('xfs'),
+var fs = require('fs-extra'),
     logger = require('./log').logger,
     path = require('path');
 
@@ -14,9 +13,9 @@ module.exports = fileutil;
 fileutil.readAllFile = function(p) {
     var allfiles = [];
 
-    if(!fs.existsSync(p)){
+    if (!fs.existsSync(p)) {
         logger.debug('【%s】不存在！', p);
-        return allfiles;  
+        return allfiles;
     }
 
     if (fs.statSync(p).isDirectory() == false) {
@@ -44,6 +43,14 @@ fileutil.readAllFile = function(p) {
     return allfiles;
 }
 
-fileutil.mkdirSync = function(path) {
-	xfs.mkdir(path);
+fileutil.mkdirSync = function(p) {
+    fs.mkdirsSync(p);
+}
+
+fileutil.existsSync = function(p) {
+    return fs.existsSync(p);
+}
+
+fileutil.copySync = function(src, dest) {
+    fs.copySync(src, dest);
 }

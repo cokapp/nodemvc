@@ -45,10 +45,9 @@ var CTX = Class.extend({
     },
     CMInit: function(options){
         var _this = this;
-
+        
         var fd = path.join(options.appRoot, _this.config.DIR.CONTROLLERS);
         _this.CM = new CM(fd);
-
     },
     PMInit: function(options){
         var _this = this;

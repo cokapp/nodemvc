@@ -2,6 +2,7 @@
     "APP_NAME": "A New NodeMVC App!",
 
     "PORT": 8086,
+    "FAVICON": "favicon.ico",
 
     "DIR": {
         "MODELS": "models",

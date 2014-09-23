@@ -24,6 +24,9 @@ module.exports = function(appRoot) {
     }
 
     _this.attach = function(weight, fileOrFolder) {
+        if(!fs.existsSync(fileOrFolder)){
+            return;  
+        }
         var stats = fs.statSync(fileOrFolder);
 
         if (stats.isFile()) {

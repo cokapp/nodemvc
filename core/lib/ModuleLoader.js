@@ -32,7 +32,7 @@ ML.load = function(paths, regex) {
             var M = require(path.normalize(file));
             M.prototype.Folder = folder;
             M.prototype.File = name;
-            logger.info('模块已载入：名称【%s】，文件【%s】', name, file);            
+            logger.info('模块已载入：文件【%s】', file);            
             allModules.put(name, M);
         }
     }

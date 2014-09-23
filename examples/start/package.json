@@ -1,0 +1,9 @@
+{
+    "name": "start",
+    "version": "0.0.3dev",
+    "main": "index",
+    "dependencies": {
+        "cokmvc": "latest"
+    }
+}
+

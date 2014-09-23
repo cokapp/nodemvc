@@ -2,10 +2,10 @@ var NodeMVC = {};
 module.exports = NodeMVC;
 
 var express = require('express');
-var session = require('express-session')
+var session = require('express-session');
 
-var favicon = require('static-favicon');
 var cookieParser = require('cookie-parser');
+var favicon = require('serve-favicon');
 var bodyParser = require('body-parser');
 var partials = require('express-partials');
 
@@ -14,12 +14,17 @@ var fs = require('fs');
 
 //StartUP
 NodeMVC.startup = function(options, callback) {
+    //前置检查
+    //日志目录
+    var logFolder = path.join(process.cwd(), 'logs');;
+    if(!fs.existsSync(logFolder)){
+        fs.mkdirSync(logFolder);
+    }
 
     //应用初始化
     require('./lib/COKMVC').init(options);
 
     var app = express();
-
     // view engine setup
     app.use(partials());
     app.set('views', COKMVC.path.join(ctx.config.__ENV.APP_ROOT, ctx.config.DIR.VIEWS));
@@ -39,7 +44,15 @@ NodeMVC.startup = function(options, callback) {
         app.use('/' + i, express.static(COKMVC.path.join(ctx.config.__ENV.APP_ROOT, st)));
     }
 
-    app.use(favicon());
+    var icon;
+    var iconPath = path.join(ctx.config.__ENV.APP_ROOT, ctx.config.FAVICON);
+    if(!fs.existsSync(iconPath)){
+        icon = new Buffer(0);
+    }else{
+        icon = iconPath;
+    };
+    app.use(favicon(icon));
+
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded());
     app.use(cookieParser());

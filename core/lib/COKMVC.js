@@ -6,10 +6,10 @@ var fs = require('fs'),
     url = require('url'),
     async = require('async');
 
-var utils = require('./utils'),
-    logger = require('./log').logger,
+var hashmap = require('./hashmap'),
+    utils = require('./utils'),
     fileutil = require('./fileutil'),
-    hashmap = require('./hashmap');
+    logger = require('./log').logger;
 
 var Context = require('./Context');
 

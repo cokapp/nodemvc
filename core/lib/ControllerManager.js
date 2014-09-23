@@ -5,10 +5,11 @@ Controller Manager
 var path = require('path');
 
 var hashmap = require('./hashmap'),
+    fileutil = require('./fileutil'),
     MM = require('./ModuleManager'),
     logger = require('./log').logger;
 
-var PM = MM.extend({
+var CM = MM.extend({
     sourcePaths: [path.join(__dirname, '../controllers/')],
     sourceRegex: /.*Controller\.js$/,
 
@@ -17,6 +18,17 @@ var PM = MM.extend({
     init: function(moduleRoot) {
         var _this = this;
 
+        var home = path.join(moduleRoot, 'homeController.js');
+        if(!fileutil.existsSync(moduleRoot)){
+            fileutil.copySync(path.join(__dirname, '../controllers/', 'home.js')
+                , path.join(moduleRoot, 'homeController.js')); 
+        }
+        var e404 = path.join(moduleRoot, 'error', 'e404Controller.js');
+        if(!fileutil.existsSync(e404)){
+            fileutil.copySync(path.join(__dirname, '../controllers/error', 'e404.js')
+                , e404);
+        }
+        
         _this._super(moduleRoot);
         _this.registerAll();
     },
@@ -47,7 +59,7 @@ var PM = MM.extend({
     },
     getHandler: function(urlpath) {
         var _this = this;
-        
+
         for (var name in _this.AllControllers) {
             var C = _this.AllControllers[name];
             var mts = urlpath.match(C.prototype.HandlerRegExp);
@@ -62,4 +74,4 @@ var PM = MM.extend({
 
 });
 
-module.exports = PM;
+module.exports = CM;
