@@ -8,12 +8,12 @@
 
 ##快速开始
 
-1. 创建项目目录【start】
+创建项目目录【start】
 ```
 mkdir start
 cd start
 ```
-2. 创建【package.json】
+创建【package.json】
 ```
 {
     "name": "start",
@@ -25,7 +25,7 @@ cd start
 }
 
 ```
-3. 创建入口文件【index.js】
+创建入口文件【index.js】
 ```
 //Set Core Lib
 var NodeMVC = require('cokmvc');
@@ -40,7 +40,7 @@ NodeMVC.startup(options, function(server){
 });
 
 ```
-4.Install&Run
+Install&Run
 ```
 npm install
 node index
