@@ -14,8 +14,13 @@ module.exports = fileutil;
 fileutil.readAllFile = function(p) {
     var allfiles = [];
 
+    if(!fs.existsSync(p)){
+        logger.debug('【%s】不存在！', p);
+        return allfiles;  
+    }
+
     if (fs.statSync(p).isDirectory() == false) {
-        logger.debug('【%s】不是一个目录，不支持【%s】操作！', path, 'fileutil.readAllFile');
+        logger.debug('【%s】不是一个目录，不支持【%s】操作！', p, 'fileutil.readAllFile');
         return allfiles;
     }
 

@@ -141,12 +141,13 @@ var Handler = Class.extend({
     _endHand: function() {
         var _this = this;
         if (_this.contentType === 'json') {
-            _this.para.res.send(_this.rsp);
+            _this.para.res.send(_this.model);
         } else { //always html
             if (typeof _this.rsp.layout === 'undefined' 
                 || _this.rsp.layout === null) {
                 _this.rsp.layout = '_public/layout';
             }
+            _this.rsp.model = _this.model;
             var tpl = _this.tpl || _this.HandlerName;
             _this.para.res.render(tpl, _this.rsp);
         }
