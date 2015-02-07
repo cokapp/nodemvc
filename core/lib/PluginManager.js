@@ -50,6 +50,7 @@ var PM = MM.extend({
         var plgArgs = args;
 
         var plgs = _this.AllPlugins.get(hook);
+        COKMVC.logger.info('exec hook named %s, registered plugins num: %s.', hook, plgs === null ? 0 : plgs.length);
 
         if(plgs === null){
             return;
@@ -62,7 +63,6 @@ var PM = MM.extend({
             var plg = plgs[i];
             plg.exec.apply(plg, plgArgs);
         }
-
     }
 });
 

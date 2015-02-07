@@ -44,22 +44,50 @@ var Handler = Class.extend({
         // req.handler = _this;
         _this.next = next;
 
-        //step.1 参数处理
-        ctx.PM.exec('para_parse_before', _this);
-        _this.para = _this._reqestParse(req, res);
-        ctx.PM.exec('para_parse_after', _this);
+        COKMVC.async.series([
+            //step.1 参数处理
+            function(cb){
+                ctx.PM.exec('para_parse_before', _this);
+                cb();
+            },
+            function(cb){
+                _this.para = _this._reqestParse(req, res);
+                cb();
+            },
+            function(cb){
+                ctx.PM.exec('para_parse_after', _this);
+                cb();
+            },
+            //step.2 正式处理Http请求
+            function(cb){
+                ctx.PM.exec('req_hand_before', _this);
+                cb();
+            },
+            function(cb){
+                _this._dohand(cb);
+            },
+            function(cb){
+                ctx.PM.exec('req_hand_after', _this);
+                cb();
+            },
+            //step.3 返回结果
+            function(cb){
+                ctx.PM.exec('req_render_before', _this);
+                cb();
+            },
+            function(cb){
+                _this._endHand();
+                cb();
+            },
+            function(cb){
+                ctx.PM.exec('req_render_after', _this);
+                cb();
+            },
+            function(e, d){
+                COKMVC.logger.info('End hand!');
+            }
 
-        //step.2 正式处理Http请求
-        ctx.PM.exec('req_hand_before', _this);
-        _this._dohand();
-        ctx.PM.exec('req_hand_after', _this);
-
-        //step.3 返回结果
-        ctx.PM.exec('req_render_before', _this);
-        _this._endHand();
-        ctx.PM.exec('req_render_after', _this);
-
-        COKMVC.logger.info('End hand!');
+        ]); 
     },
     _reqestParse: function(req, res) {
         var _this = this;
@@ -87,7 +115,7 @@ var Handler = Class.extend({
 
         return para;
     },
-    _dohand: function() {
+    _dohand: function(callback) {
         var _this = this;
 
         COKMVC.async.series([
@@ -116,15 +144,15 @@ var Handler = Class.extend({
         ], function(e, d) {
             if (_this.doAll != null) {
                 COKMVC.logger.info('doAll by %s', _this.HandlerName);
-                _this.doAll();
+                _this.doAll(callback);
                 return;
             }
             if (_this.para.req.method === 'GET') {
                 COKMVC.logger.info('doGet by %s', _this.HandlerName);
-                _this.doGet();
+                _this.doGet(callback);
             } else {
                 COKMVC.logger.info('goPost by %s', _this.HandlerName);
-                _this.doPost();
+                _this.doPost(callback);
             }
         });
     },
@@ -139,6 +167,7 @@ var Handler = Class.extend({
     initModel: null,
 
     _endHand: function() {
+        COKMVC.logger.info('render page!');
         var _this = this;
         if (_this.contentType === 'json') {
             _this.para.res.send(_this.model);

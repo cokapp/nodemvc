@@ -1,7 +1,7 @@
 {
     "name": "cokmvc",
     "description": "a simple mvc framework based on express.",
-    "version": "0.0.97dev",
+    "version": "0.1.0",
     "author": {
         "name": "bladin",
         "email": "dev@cokapp.com",
